@@ -1,37 +1,49 @@
 // Boilerplate Code for Virtual Assistant API
+const e = require('express');
 const express = require('express');
 const app = express();
 
-/*
-Task:
-You need to build an API for a virtual assistant that provides customized responses.
+function message(){
 
-Requirements:
-1. Create a GET endpoint at "/assistant/greet".
-2. The endpoint should accept a "name" as a query parameter (e.g., /assistant/greet?name=John).
-3. The API should return a JSON response with:
-   a. A personalized greeting using the name provided.
-   b. A cheerful message based on the current day of the week.
+    let date = new Date();
+    let day = date.getDay();
 
-Example Responses:
-- For Monday:
-  {
-    "welcomeMessage": "Hello, John! Welcome to our assistant app!",
-    "dayMessage": "Happy Monday! Start your week with energy!"
+    if(day == 1){
+        return {
+          "dayMessage": "Happy Monday! Start your week with energy!"
+        }
+    }
+    if(day == 5){
+      return {
+        "dayMessage": "It's Friday! The weekend is near!"
+      }
   }
-- For Friday:
-  {
-    "welcomeMessage": "Hello, John! Welcome to our assistant app!",
-    "dayMessage": "It's Friday! The weekend is near!"
+  else{
+    return {
+      "dayMessage": "Have a wonderful day!"
+    }
   }
-- For other days:
-  {
-    "welcomeMessage": "Hello, John! Welcome to our assistant app!",
-    "dayMessage": "Have a wonderful day!"
-  }
+}
 
-Add the required logic below to complete the API.
-*/
+
+
+app.get("/assistant/greet",async(req, res) => {
+      try {
+
+        let user =req.query.name
+        if(!user){
+          res.status(500).json({message: "user is not given correct"});
+        }
+        let welcomeMessage =`Hello, ${user} Welcome to our assistant app!`
+        let greet = message()
+        greet.welcomeMessage = welcomeMessage
+        res.status(200).json(greet);
+        
+      } catch (error) {
+         res.status(500).json({message: "internal server error"});
+      }
+
+})
 
 const PORT = 3000;
 app.listen(PORT, () => {
